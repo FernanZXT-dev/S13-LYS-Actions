@@ -1,0 +1,44 @@
+name: CI - Pruebas y Validación Backend/Frontend
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-and-build:
+    name: Ejecución de Pruebas (Vitest & PGlite RLS)
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: Front-Polleria-LYS-main
+
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: Front-Polleria-LYS-main/package-lock.json
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Ejecutar pruebas unitarias y de integración (RLS, Permisos y Servicios)
+        run: npm test
+
+      - name: Validar compilación de producción (Vite build)
+        run: npm run build
