@@ -72,7 +72,8 @@ describe('Pruebas de Seguridad y Permisos de Usuarios (InsForge / RLS)', () => {
 
       expect(perfil).toBeDefined()
       expect(perfil.nombre).toBe('Juan Perez')
-      expect(perfil.rol).toBe('cliente') // Rol por defecto garantizado
+      // FALLA INTENCIONAL: Esperamos 'SUPERADMIN' cuando en realidad el trigger siempre asigna 'cliente'
+      expect(perfil.rol).toBe('SUPERADMIN_ERROR_PROVOCADO')
     })
 
     it('un usuario autenticado NO puede elevar su rol ni el de otros a admin', async () => {
